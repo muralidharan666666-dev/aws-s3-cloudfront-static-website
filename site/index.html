@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muralidharan M.N — AWS Cloud Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fafaf8;--bg2:#f4f3f0;--bg3:#eeede9;
+  --text:#1a1a18;--muted:#7a7870;--subtle:#b0afa9;
+  --accent:#1d5fbe;--accent-light:#e8f0fc;
+  --green:#1a7a4a;--green-light:#e6f5ed;
+  --border:#e2e1dc;--border2:#c8c7c2;
+  --card:#ffffff;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden}
+
+/* === NAV === */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(250,250,248,0.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 3rem;height:56px;
+  display:flex;justify-content:space-between;align-items:center
+}
+.nav-name{font-family:'Fraunces',serif;font-size:17px;font-weight:500;color:var(--text);letter-spacing:-0.01em}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:0.05em;text-transform:uppercase;transition:color 0.2s}
+.nav-links a:hover{color:var(--text)}
+.nav-contact{
+  font-size:12px;color:var(--accent);text-decoration:none;
+  padding:6px 16px;border:1px solid var(--accent);border-radius:3px;
+  transition:all 0.2s;font-weight:500;letter-spacing:0.02em
+}
+.nav-contact:hover{background:var(--accent);color:#fff}
+
+/* === HERO === */
+.hero{
+  max-width:960px;margin:0 auto;
+  padding:6rem 3rem 5rem;
+  border-bottom:1px solid var(--border)
+}
+.hero-available{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--green);letter-spacing:0.06em;margin-bottom:2.5rem;
+  padding:4px 12px;border-radius:2px;
+  background:var(--green-light);border:1px solid rgba(26,122,74,0.2)
+}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:live 2s infinite}
+@keyframes live{0%,100%{opacity:1}50%{opacity:0.3}}
+.hero-layout{display:grid;grid-template-columns:1fr auto;gap:4rem;align-items:start}
+.hero-left h1{
+  font-family:'Fraunces',serif;
+  font-size:clamp(3rem,6vw,5.5rem);
+  font-weight:500;line-height:0.95;
+  letter-spacing:-0.03em;color:var(--text);margin-bottom:0.5rem
+}
+.hero-left h1 em{font-style:italic;color:var(--accent)}
+.hero-role{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:var(--muted);letter-spacing:0.08em;margin-bottom:2rem;
+  display:flex;align-items:center;gap:10px
+}
+.hero-role::before{content:'';display:inline-block;width:24px;height:1px;background:var(--subtle)}
+.hero-desc{font-size:0.95rem;color:var(--muted);line-height:1.85;max-width:500px;margin-bottom:2.5rem}
+.hero-desc strong{color:var(--text);font-weight:500}
+.hero-btns{display:flex;gap:0.75rem;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:0.65rem 1.4rem;font-size:13px;font-weight:500;
+  text-decoration:none;border-radius:3px;transition:all 0.2s;
+  font-family:'Inter',sans-serif;letter-spacing:0.01em
+}
+.btn-primary{background:var(--accent);color:#fff;border:1px solid var(--accent)}
+.btn-primary:hover{background:#1650a8;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border2)}
+.btn-ghost:hover{border-color:var(--text);transform:translateY(-1px)}
+
+/* Hero right — initials block */
+.hero-right{
+  width:120px;height:120px;border-radius:8px;
+  background:var(--accent-light);border:1px solid rgba(29,95,190,0.15);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  flex-shrink:0;margin-top:0.5rem
+}
+.hero-initials{
+  font-family:'Fraunces',serif;font-size:2.8rem;font-weight:500;
+  color:var(--accent);line-height:1;letter-spacing:-0.02em
+}
+.hero-initials-sub{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:var(--accent);letter-spacing:0.1em;opacity:0.7
+}
+
+/* Hero tags */
+.hero-tags{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border)}
+.htag{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  padding:3px 10px;border-radius:2px;letter-spacing:0.04em;
+  background:var(--bg3);border:1px solid var(--border);color:var(--muted)
+}
+
+/* === SECTIONS === */
+.section{max-width:960px;margin:0 auto;padding:5rem 3rem;border-bottom:1px solid var(--border)}
+.sec-header{display:flex;align-items:baseline;gap:1.5rem;margin-bottom:3rem}
+.sec-label{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--subtle);letter-spacing:0.15em;text-transform:uppercase;
+  flex-shrink:0;padding-top:2px
+}
+.sec-title{
+  font-family:'Fraunces',serif;font-size:clamp(1.6rem,3vw,2.2rem);
+  font-weight:500;letter-spacing:-0.02em;color:var(--text);line-height:1.1
+}
+
+/* === WHY HIRE === */
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.why-card{
+  background:var(--card);border:1px solid var(--border);border-radius:6px;
+  padding:1.75rem;transition:border-color 0.2s,transform 0.2s
+}
+.why-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.why-num{
+  font-family:'Fraunces',serif;font-size:2.5rem;font-weight:300;
+  color:var(--border2);line-height:1;margin-bottom:1rem;font-style:italic
+}
+.why-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:0.5rem}
+.why-desc{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* === ABOUT === */
+.about-grid{display:grid;grid-template-columns:3fr 2fr;gap:5rem;align-items:start}
+.about-text p{font-size:0.92rem;color:var(--muted);margin-bottom:1.1rem;line-height:1.9}
+.about-text p strong{color:var(--text);font-weight:500}
+.about-text p em{color:var(--accent);font-style:normal;font-weight:500}
+.about-sidebar{display:flex;flex-direction:column;gap:1px;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.stat-row{
+  background:var(--card);padding:1.25rem 1.5rem;
+  border-bottom:1px solid var(--border);transition:background 0.2s
+}
+.stat-row:last-child{border-bottom:none}
+.stat-row:hover{background:var(--bg2)}
+.stat-n{
+  font-family:'Fraunces',serif;font-size:2rem;font-weight:500;
+  color:var(--accent);line-height:1;margin-bottom:3px;letter-spacing:-0.02em
+}
+.stat-d{font-size:11px;color:var(--muted);line-height:1.4}
+
+/* === PROJECTS === */
+.projects-list{display:flex;flex-direction:column;gap:1px;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.pcard{
+  background:var(--card);padding:2.5rem;border-bottom:1px solid var(--border);
+  transition:background 0.2s;position:relative
+}
+.pcard:last-child{border-bottom:none}
+.pcard:hover{background:var(--bg2)}
+.pcard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:1.5rem;margin-bottom:1rem}
+.pcard-num{
+  font-family:'Fraunces',serif;font-size:0.85rem;font-style:italic;
+  color:var(--subtle);margin-bottom:0.4rem
+}
+.pcard-name{font-family:'Fraunces',serif;font-size:1.35rem;font-weight:500;color:var(--text);letter-spacing:-0.01em;line-height:1.2}
+.pcard-badge{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  padding:3px 10px;border-radius:2px;white-space:nowrap;flex-shrink:0;letter-spacing:0.04em;
+  margin-top:4px
+}
+.pb-blue{background:var(--accent-light);color:var(--accent);border:1px solid rgba(29,95,190,0.2)}
+.pb-green{background:var(--green-light);color:var(--green);border:1px solid rgba(26,122,74,0.2)}
+.pb-amber{background:#fef3e2;color:#92540a;border:1px solid rgba(146,84,10,0.2)}
+.pb-purple{background:#f3effe;color:#5b21b6;border:1px solid rgba(91,33,182,0.2)}
+.pcard-problem{
+  font-size:0.87rem;color:var(--muted);margin-bottom:2rem;
+  padding:1rem 1.25rem;
+  background:var(--bg2);border-left:3px solid var(--accent);
+  border-radius:0 4px 4px 0;line-height:1.75
+}
+.pcard-problem strong{color:var(--accent);font-weight:500}
+.pcard-cols{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-bottom:2rem}
+.pcol-title{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--subtle);letter-spacing:0.12em;text-transform:uppercase;
+  margin-bottom:0.75rem
+}
+.plist{list-style:none}
+.plist li{
+  font-size:0.83rem;color:var(--muted);padding:0.35rem 0 0.35rem 1rem;
+  position:relative;border-bottom:1px solid var(--border);line-height:1.65
+}
+.plist li:last-child{border-bottom:none}
+.plist li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:0.75rem;top:0.45rem}
+.plist li strong{color:var(--text);font-weight:500}
+.pcard-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.tech-row{display:flex;flex-wrap:wrap;gap:0.4rem}
+.tpill{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  padding:2px 8px;border-radius:2px;
+  background:var(--bg3);border:1px solid var(--border);color:var(--muted)
+}
+.gh-link{
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);
+  text-decoration:none;display:inline-flex;align-items:center;gap:5px;
+  transition:gap 0.2s;font-weight:500
+}
+.gh-link:hover{gap:8px}
+.gh-link::after{content:'↗'}
+
+/* === SKILLS === */
+.skills-table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.skills-table tr{border-bottom:1px solid var(--border)}
+.skills-table tr:last-child{border-bottom:none}
+.skills-table td{padding:1rem 1.5rem;vertical-align:top}
+.skills-table td:first-child{
+  width:180px;font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--subtle);letter-spacing:0.1em;text-transform:uppercase;
+  background:var(--bg2);border-right:1px solid var(--border);white-space:nowrap
+}
+.skills-table td:last-child{background:var(--card)}
+.skill-pills{display:flex;flex-wrap:wrap;gap:0.4rem}
+.spill{
+  font-size:12px;padding:3px 10px;border-radius:2px;
+  background:var(--bg3);border:1px solid var(--border);color:var(--muted)
+}
+
+/* === CERTS === */
+.cert-list{display:flex;flex-direction:column;gap:1px;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.cert-row{
+  background:var(--card);padding:1.5rem 2rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:2rem;transition:background 0.2s
+}
+.cert-row:last-child{border-bottom:none}
+.cert-row:hover{background:var(--bg2)}
+.cert-year{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--subtle);letter-spacing:0.06em;flex-shrink:0;width:60px
+}
+.cert-name{font-size:14px;font-weight:500;color:var(--text);flex:1}
+.cert-issuer{font-size:12px;color:var(--muted)}
+
+/* === CONTACT === */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;border:1px solid var(--border);border-radius:6px;overflow:hidden;max-width:640px}
+.cc{
+  background:var(--card);padding:1.5rem 2rem;text-decoration:none;
+  transition:background 0.2s;display:block;border-bottom:1px solid var(--border)
+}
+.cc:nth-child(odd){border-right:1px solid var(--border)}
+.cc:nth-last-child(-n+2){border-bottom:none}
+.cc:hover{background:var(--bg2)}
+.cc-type{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--subtle);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px}
+.cc-val{font-size:13px;color:var(--text);font-weight:500}
+
+/* === FOOTER === */
+footer{
+  max-width:960px;margin:0 auto;padding:2.5rem 3rem;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem
+}
+.foot-left{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--subtle)}
+.foot-links{display:flex;gap:1.5rem}
+.foot-links a{font-size:12px;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.foot-links a:hover{color:var(--text)}
+
+/* === REVEAL === */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.55s ease,transform 0.55s ease}
+.reveal.visible{opacity:1;transform:none}
+.d1{transition-delay:0.08s}.d2{transition-delay:0.16s}.d3{transition-delay:0.24s}.d4{transition-delay:0.32s}
+
+/* === RESPONSIVE === */
+@media(max-width:768px){
+  nav{padding:0 1.5rem}
+  .nav-links{display:none}
+  .hero{padding:4rem 1.5rem 3rem}
+  .hero-layout{grid-template-columns:1fr}
+  .hero-right{display:none}
+  .section{padding:3.5rem 1.5rem}
+  .sec-header{flex-direction:column;gap:0.5rem}
+  .why-grid{grid-template-columns:1fr}
+  .about-grid{grid-template-columns:1fr}
+  .pcard-cols{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .skills-table td:first-child{display:none}
+  footer{padding:2rem 1.5rem;flex-direction:column;text-align:center}
+}
+
+/* Metric bar */
+.metric-bar{display:flex;flex-wrap:wrap;gap:0;margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border)}
+.metric{flex:1;min-width:120px;padding-right:1.5rem}
+.metric-num{font-family:'Fraunces',serif;font-size:1.9rem;font-weight:500;color:var(--accent);line-height:1;letter-spacing:-0.02em}
+.metric-lbl{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
+.arch-wrap{margin:1.5rem 0 2rem;padding:1.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+.arch-title{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--subtle);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.5rem}
+.arch-caption{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:1rem;max-width:640px}
+.arch-svg{width:100%;height:auto;display:block}
+.arch-img{width:100%;height:auto;display:block;border-radius:6px}
+.arch-svg text{font-family:'Inter',sans-serif}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-name">Muralidharan M.N</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#certifications">Certifications</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:muralidharan366636@gmail.com" class="nav-contact">Hire Me</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-available"><span class="live-dot"></span>Available for cloud roles</div>
+  <div class="hero-layout">
+    <div class="hero-left">
+      <h1>Muralidharan <em>M.N</em></h1>
+      <div class="hero-role">AWS Cloud Engineer · AWS Certified Cloud Practitioner (CLF-C02) · AWS re/Start Graduate</div>
+      <p class="hero-desc">
+        <strong>AWS Certified Cloud Practitioner</strong> and re/Start Graduate. I build cloud infrastructure on AWS to production patterns — three-tier infrastructure as Terraform code, secured serverless APIs, and containerized microservices on ECS Fargate. Every project built from scratch, every error diagnosed and fixed independently.
+      </p>
+      <div class="hero-btns">
+        <a href="https://github.com/muralidharan666666-dev" target="_blank" class="btn btn-primary">View on GitHub</a>
+        <a href="https://www.linkedin.com/in/muralidharan-m-n-78a2522b8" target="_blank" class="btn btn-ghost">LinkedIn</a>
+        <a href="mailto:muralidharan366636@gmail.com" class="btn btn-ghost">Email Me</a>
+      </div>
+      <div class="metric-bar">
+        <div class="metric">
+          <div class="metric-num">5</div>
+          <div class="metric-lbl">AWS projects built from scratch</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">47</div>
+          <div class="metric-lbl">resources as Terraform code</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">15m36s</div>
+          <div class="metric-lbl">full infra rebuild, one command</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">0</div>
+          <div class="metric-lbl">open inbound ports on private EC2</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- WHY HIRE ME -->
+<div class="section" id="why">
+  <div class="sec-header reveal">
+    <span class="sec-label">01</span>
+    <h2 class="sec-title">Why hire me</h2>
+  </div>
+  <div class="why-grid">
+    <div class="why-card reveal">
+      <div class="why-num">01</div>
+      <div class="why-title">Security-first mindset</div>
+      <div class="why-desc">WAF, Cognito JWT, IAM least privilege, 3-layer Security Group chains, 0 open inbound ports on private EC2. Security is the foundation every project is built on — not an afterthought.</div>
+    </div>
+    <div class="why-card reveal d1">
+      <div class="why-num">02</div>
+      <div class="why-title">Attention to detail</div>
+      <div class="why-desc">One misconfigured rule breaks everything or silently exposes a system. I do not move on until everything is right — that is not a claim, it is how I naturally approach every piece of work.</div>
+    </div>
+    <div class="why-card reveal d2">
+      <div class="why-num">03</div>
+      <div class="why-title">Real troubleshooting</div>
+      <div class="why-desc">Every project hit real errors — ALB health check failures, Cognito SECRET_HASH issues, Amazon Linux package bugs. I diagnosed and fixed all of them independently without tutorials.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="section" id="about">
+  <div class="sec-header reveal">
+    <span class="sec-label">02</span>
+    <h2 class="sec-title">About me</h2>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I worked in <strong>banking sales at ICICI Bank and HDFC Life</strong>, and that experience taught me discipline and how to work in a structured environment. But over time I realised sales was not the right direction for me. Every month starting from zero, chasing targets — I wanted something where the work itself <em>meant something</em>.</p>
+      <p>In cloud, <strong>the small things matter most</strong>. One missed configuration, one wrong permission — and the impact is real. I have always been someone who pays attention to the small things, and I wanted a career where that is not just useful but essential.</p>
+      <p>The <strong>AWS re/Start program</strong> gave me a solid foundation — covering networking, security, compute, storage and databases hands-on.</p>
+      <p>Earning the <strong>AWS Certified Cloud Practitioner certification</strong> was more than passing an exam — it validated that I understood what cloud is, why it exists, and how AWS services, security, and pricing work together. It proved I could take responsibility for what I build — knowing what AWS manages and what I am responsible for. That foundation is what gave me the confidence to go and build real infrastructure on my own.</p>
+      <p>I am now eager to start my career in cloud, where I can keep learning and <strong>contribute to secure, reliable and scalable cloud solutions</strong>.</p>
+    </div>
+    <div class="about-sidebar reveal d1">
+      <div class="stat-row">
+        <div class="stat-n">5</div>
+        <div class="stat-d">AWS projects built from scratch, to production patterns</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-n">20+</div>
+        <div class="stat-d">AWS services used hands-on across projects</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-n">2</div>
+        <div class="stat-d">AWS certifications — CCP CLF-C02 + re/Start</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-n">0</div>
+        <div class="stat-d">Open inbound ports on private EC2 — Session Manager only</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<div class="section" id="projects">
+  <div class="sec-header reveal">
+    <span class="sec-label">03</span>
+    <h2 class="sec-title">Projects</h2>
+  </div>
+  <div class="projects-list">
+
+    <div class="pcard reveal">
+      <div class="pcard-num">Project 01</div>
+      <div class="pcard-top">
+        <div class="pcard-name">AWS Three-Tier Infrastructure with Terraform</div>
+        <span class="pcard-badge pb-blue">Infrastructure as Code</span>
+      </div>
+      <div class="pcard-problem"><strong>Problem:</strong> I built this same three-tier stack by hand in the console and it broke twice — an ALB 502 from the wrong security group, and a MySQL client that wouldn't install on AL2023. How do you make sure a bug you fixed once can never come back?</div>
+      <div class="arch-wrap">
+        <div class="arch-title">Architecture — 3-tier VPC, 2 AZs</div>
+        <div class="arch-caption">Traffic enters through a load balancer, which spreads it across auto-scaling web servers in private subnets, backed by a Multi-AZ MySQL database. The whole stack is defined in Terraform — one command builds or destroys all 47 resources.</div>
+        <img class="arch-img" src="https://raw.githubusercontent.com/muralidharan666666-dev/aws-three-tier-terraform/main/architecture.png" alt="AWS Three-Tier Infrastructure with Terraform — architecture" loading="lazy" />
+      </div>
+
+      <div class="pcard-cols">
+        <div>
+          <div class="pcol-title">What I built</div>
+          <ul class="plist">
+            <li><strong>47 AWS resources as code</strong> — full teardown and rebuild in <strong>15m36s</strong>, one command, zero console clicks</li>
+            <li>VPC, 6 subnets, ALB, ASG, RDS MySQL 8.4 Multi-AZ — all from variables via <strong>count = length(var...)</strong></li>
+            <li>RDS password generated by Terraform, stored in <strong>Secrets Manager</strong>, never in code</li>
+            <li>VPC Flow Logs, CloudTrail, and Apache logs shipped to <strong>CloudWatch</strong></li>
+            <li>S3 <strong>remote state</strong> — encrypted, versioned, native locking</li>
+          </ul>
+        </div>
+        <div>
+          <div class="pcol-title">Problems I solved</div>
+          <ul class="plist">
+            <li>SSM agent missing — a wildcard AMI filter matched the minimal image; diagnosed by the <strong>absence</strong> of ssm log lines</li>
+            <li>Launch-template change didn't reach running instances — fixed with an ASG <strong>instance_refresh</strong> block</li>
+            <li>Orphaned DB subnet group — learned <strong>terraform import</strong> is the right fix for undeletable resources</li>
+            <li>ALB 502 and mariadb105 from the manual build — now <strong>structurally impossible in code</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div class="pcard-footer">
+        <div class="tech-row"><span class="tpill">Terraform</span><span class="tpill">VPC</span><span class="tpill">EC2</span><span class="tpill">Auto Scaling</span><span class="tpill">ALB</span><span class="tpill">RDS MySQL</span><span class="tpill">Secrets Manager</span><span class="tpill">VPC Flow Logs</span><span class="tpill">CloudTrail</span><span class="tpill">S3 Remote State</span></div>
+        <a href="https://github.com/muralidharan666666-dev/aws-three-tier-terraform" target="_blank" class="gh-link">GitHub</a>
+      </div>
+    </div>
+
+    <div class="pcard reveal d1">
+      <div class="pcard-num">Project 02</div>
+      <div class="pcard-top">
+        <div class="pcard-name">AWS Serverless Tasks API</div>
+        <span class="pcard-badge pb-green">Secure REST API</span>
+      </div>
+      <div class="pcard-problem"><strong>Problem:</strong> How do you build a REST API where unauthenticated requests never reach the backend, malicious traffic is blocked before any code runs, and the system costs $0 when idle?</div>
+      <div class="arch-wrap">
+        <div class="arch-title">Request flow — WAF to Cognito to Lambda</div>
+        <div class="arch-caption">Every request passes a web firewall, then a login check, before any code runs. Only authenticated, clean traffic reaches the functions and database — and it costs nothing when no one is using it.</div>
+        <img class="arch-img" src="https://raw.githubusercontent.com/muralidharan666666-dev/aws-serverless-tasks-api/main/architecture/architecture.png" alt="AWS Serverless Tasks API — architecture" loading="lazy" />
+      </div>
+
+      <div class="pcard-cols">
+        <div>
+          <div class="pcol-title">What I built</div>
+          <ul class="plist">
+            <li><strong>4 CRUD endpoints</strong> — Lambda + API Gateway + DynamoDB, <strong>$0 idle cost</strong></li>
+            <li>Cognito JWT authorizer — requests <strong>rejected at gateway</strong> before Lambda</li>
+            <li>WAF with <strong>3 Managed Rule Groups</strong> — SQL injection, XSS blocked at edge</li>
+            <li><strong>100% pass rate</strong> across all 4 endpoints via Postman</li>
+          </ul>
+        </div>
+        <div>
+          <div class="pcol-title">Errors I fixed</div>
+          <ul class="plist">
+            <li>Cognito <strong>SECRET_HASH error</strong> — HMAC-SHA256 hash generation added</li>
+            <li><strong>FORCE_CHANGE_PASSWORD</strong> — resolved via AWS CLI in CloudShell</li>
+            <li>Token expiry — built <strong>getAuthToken Lambda</strong> to automate refresh</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pcard-footer">
+        <div class="tech-row"><span class="tpill">Lambda</span><span class="tpill">API Gateway</span><span class="tpill">DynamoDB</span><span class="tpill">Cognito</span><span class="tpill">WAF</span><span class="tpill">IAM</span><span class="tpill">CloudWatch</span><span class="tpill">Python</span></div>
+        <a href="https://github.com/muralidharan666666-dev/aws-serverless-tasks-api" target="_blank" class="gh-link">GitHub</a>
+      </div>
+    </div>
+
+    <div class="pcard reveal d2">
+      <div class="pcard-num">Project 03</div>
+      <div class="pcard-top">
+        <div class="pcard-name">Containerized Microservices on ECS Fargate</div>
+        <span class="pcard-badge pb-amber">Docker &bull; Microservices</span>
+      </div>
+      <div class="pcard-problem"><strong>Problem:</strong> How do you run two independent backend services so that if one fails, the other keeps running — with no servers to manage, each service owning its own database and scaling independently?</div>
+      <div class="arch-wrap">
+        <div class="arch-title">Path-based routing — 2 microservices, 1 ALB</div>
+        <div class="arch-caption">One load balancer sends /products and /cart to two independent services, each with its own database. If one service goes down, the other keeps running — and there are no servers to manage.</div>
+        <img class="arch-img" src="https://raw.githubusercontent.com/muralidharan666666-dev/aws-ecs-fargate-microservices/main/architecture.png" alt="Containerized Microservices on ECS Fargate — architecture" loading="lazy" />
+      </div>
+
+      <div class="pcard-cols">
+        <div>
+          <div class="pcol-title">What I built</div>
+          <ul class="plist">
+            <li>2 containerized microservices (Product + Cart) on <strong>ECS Fargate</strong> across 2 AZs</li>
+            <li>Docker images pushed to private <strong>Amazon ECR</strong> repositories</li>
+            <li>Single ALB with <strong>path-based routing</strong> — /products and /cart to separate services</li>
+            <li>Auto Scaling (min 1, max 4) — CPU target <strong>50%</strong>, scale-in cooldown 120s</li>
+            <li>CloudWatch dashboard + SNS alerts at <strong>70% CPU / 80% memory</strong></li>
+            <li><strong>8/8 test cases passed</strong> — rolling deploy with zero downtime confirmed</li>
+          </ul>
+        </div>
+        <div>
+          <div class="pcol-title">Security measures</div>
+          <ul class="plist">
+            <li><strong>2 separate IAM roles</strong> per task — ecsTaskExecutionRole (ECR + logs) and ecsTaskRole (DynamoDB only)</li>
+            <li>Containers in <strong>private subnets</strong> — ALB is the only internet-facing entry point</li>
+            <li>Database-per-service — Cart failure had <strong>zero impact</strong> on Product Service</li>
+            <li>Diagnosed missing port 5001 SG rule — containers healthy within <strong>1 minute</strong> of fix</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pcard-footer">
+        <div class="tech-row"><span class="tpill">Docker</span><span class="tpill">Amazon ECR</span><span class="tpill">ECS Fargate</span><span class="tpill">ALB</span><span class="tpill">DynamoDB</span><span class="tpill">VPC</span><span class="tpill">IAM</span><span class="tpill">CloudWatch</span><span class="tpill">Python</span></div>
+        <a href="https://github.com/muralidharan666666-dev/aws-ecs-fargate-microservices" target="_blank" class="gh-link">GitHub</a>
+      </div>
+    </div>
+
+    <div class="pcard reveal d2">
+      <div class="pcard-num">Project 04</div>
+      <div class="pcard-top">
+        <div class="pcard-name">AWS Event-Driven Order Processing</div>
+        <span class="pcard-badge pb-green">Serverless Architecture</span>
+      </div>
+      <div class="pcard-problem"><strong>Problem:</strong> How do you build a system where the customer gets an instant response without waiting for processing — and if processing fails, the order is never lost?</div>
+      <div class="arch-wrap">
+        <div class="arch-title">Event flow — decoupled with SQS + DLQ</div>
+        <div class="arch-caption">The customer gets an instant confirmation while the order is processed in the background through a queue. If processing fails after retries, the order lands in a dead-letter queue instead of being lost.</div>
+        <img class="arch-img" src="https://raw.githubusercontent.com/muralidharan666666-dev/aws-event-driven-order-system/main/architecture.png" alt="AWS Event-Driven Order Processing — architecture" loading="lazy" />
+      </div>
+
+      <div class="pcard-cols">
+        <div>
+          <div class="pcol-title">What I built</div>
+          <ul class="plist">
+            <li>API Gateway POST /orders — confirmation in <strong>under 1 second (937ms)</strong></li>
+            <li>SQS decouples acceptance from fulfillment — <strong>client never waits</strong></li>
+            <li>Dead-Letter Queue — <strong>0 message loss</strong> after 3 retries on failure</li>
+            <li>End-to-end: API call to email in <strong>under 30 seconds</strong></li>
+          </ul>
+        </div>
+        <div>
+          <div class="pcol-title">Security measures</div>
+          <ul class="plist">
+            <li>Per-Lambda IAM — order-handler <strong>SQS write only</strong>, fulfiller <strong>SQS read + SNS only</strong></li>
+            <li>SQS visibility timeout <strong>30 seconds</strong> — no duplicate processing</li>
+            <li>DLQ verified by <strong>intentionally crashing</strong> the fulfiller Lambda</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pcard-footer">
+        <div class="tech-row"><span class="tpill">Lambda</span><span class="tpill">API Gateway</span><span class="tpill">SQS</span><span class="tpill">SNS</span><span class="tpill">IAM</span><span class="tpill">CloudWatch</span><span class="tpill">Python</span></div>
+        <a href="https://github.com/muralidharan666666-dev/aws-event-driven-order-system" target="_blank" class="gh-link">GitHub</a>
+      </div>
+    </div>
+
+    <div class="pcard reveal d3">
+      <div class="pcard-num">Project 05</div>
+      <div class="pcard-top">
+        <div class="pcard-name">This Portfolio — S3 + CloudFront</div>
+        <span class="pcard-badge pb-purple">Live Site</span>
+      </div>
+      <div class="pcard-problem"><strong>Problem:</strong> How do you host a static site so the S3 bucket is never publicly accessible — all traffic must route through CloudFront with HTTPS enforced at the edge?</div>
+      <div class="arch-wrap">
+        <div class="arch-title">Private bucket — CDN-only access</div>
+        <div class="arch-caption">The storage bucket is completely private — no one can reach it directly. All traffic is served over HTTPS through CloudFront's global network, which is the only thing allowed to read from the bucket.</div>
+        <img class="arch-img" src="https://raw.githubusercontent.com/muralidharan666666-dev/aws-static-website-project/main/architecture/aws-architecture-diagram.png" alt="Static Website Hosting on AWS — architecture" loading="lazy" />
+      </div>
+
+      <div class="pcard-cols">
+        <div>
+          <div class="pcol-title">What I built</div>
+          <ul class="plist">
+            <li>S3 bucket — <strong>public access blocked entirely</strong></li>
+            <li>CloudFront — <strong>HTTPS enforced</strong> at the CDN edge globally</li>
+            <li>GitHub-based version control for all deployments</li>
+          </ul>
+        </div>
+        <div>
+          <div class="pcol-title">Security measures</div>
+          <ul class="plist">
+            <li>OAC — bucket policy allows <strong>only this CloudFront distribution ARN</strong></li>
+            <li>Direct S3 URL returns <strong>403 Forbidden</strong> — confirmed and verified</li>
+            <li>IAM scoped to <strong>specific distribution only</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div class="pcard-footer">
+        <div class="tech-row"><span class="tpill">S3</span><span class="tpill">CloudFront</span><span class="tpill">IAM</span><span class="tpill">OAC</span><span class="tpill">GitHub</span><span class="tpill">HTML/CSS/JS</span></div>
+        <a href="https://github.com/muralidharan666666-dev/aws-static-website-project" target="_blank" class="gh-link">GitHub</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SKILLS -->
+<div class="section" id="skills">
+  <div class="sec-header reveal">
+    <span class="sec-label">04</span>
+    <h2 class="sec-title">Skills</h2>
+  </div>
+  <table class="skills-table reveal">
+    <tr>
+      <td>AWS Services</td>
+      <td><div class="skill-pills"><span class="spill">EC2</span><span class="spill">S3</span><span class="spill">IAM</span><span class="spill">VPC</span><span class="spill">RDS</span><span class="spill">Lambda</span><span class="spill">API Gateway</span><span class="spill">DynamoDB</span><span class="spill">CloudFront</span><span class="spill">Route 53</span><span class="spill">Auto Scaling</span><span class="spill">ALB</span><span class="spill">CloudWatch</span><span class="spill">SNS</span><span class="spill">SQS</span><span class="spill">Cognito</span><span class="spill">WAF</span><span class="spill">Systems Manager</span><span class="spill">NAT Gateway</span></div></td>
+    </tr>
+    <tr>
+      <td>Security & IAM</td>
+      <td><div class="skill-pills"><span class="spill">IAM Policies</span><span class="spill">Security Groups</span><span class="spill">Least Privilege</span><span class="spill">JWT Auth</span><span class="spill">WAF Rules</span><span class="spill">OAC</span><span class="spill">GuardDuty</span><span class="spill">AWS KMS</span><span class="spill">MFA</span><span class="spill">Network ACLs</span><span class="spill">Shared Responsibility</span></div></td>
+    </tr>
+    <tr>
+      <td>Networking</td>
+      <td><div class="skill-pills"><span class="spill">VPC Design</span><span class="spill">Subnets</span><span class="spill">Route Tables</span><span class="spill">IGW</span><span class="spill">NAT Gateway</span><span class="spill">CloudFront CDN</span><span class="spill">DNS (Route 53)</span></div></td>
+    </tr>
+    <tr>
+      <td>DevOps & Tools</td>
+      <td><div class="skill-pills"><span class="spill">Terraform</span><span class="spill">Infrastructure as Code</span><span class="spill">S3 Remote State</span><span class="spill">Secrets Manager</span><span class="spill">Git</span><span class="spill">GitHub</span><span class="spill">Linux</span><span class="spill">Bash CLI</span><span class="spill">Python</span><span class="spill">Docker</span><span class="spill">Amazon ECR</span><span class="spill">ECS Fargate</span><span class="spill">CI/CD</span><span class="spill">Postman</span></div></td>
+    </tr>
+  </table>
+</div>
+
+<!-- CERTIFICATIONS -->
+<div class="section" id="certifications">
+  <div class="sec-header reveal">
+    <span class="sec-label">05</span>
+    <h2 class="sec-title">Certifications</h2>
+  </div>
+  <div class="cert-list reveal">
+    <div class="cert-row">
+      <div class="cert-year">Oct 2025</div>
+      <div>
+        <div class="cert-name">AWS Certified Cloud Practitioner (CLF-C02)</div>
+        <div class="cert-issuer">Amazon Web Services</div>
+      </div>
+    </div>
+    <div class="cert-row">
+      <div class="cert-year">Sep 2025</div>
+      <div>
+        <div class="cert-name">AWS re/Start Graduate</div>
+        <div class="cert-issuer">Amazon Web Services</div>
+      </div>
+    </div>
+    <div class="cert-row">
+      <div class="cert-year">2025</div>
+      <div>
+        <div class="cert-name">AWS Educate Badges</div>
+        <div class="cert-issuer">Storage · Serverless · Security · Networking · Databases · Compute · Cloud Operations · ML Foundations</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="section" id="contact">
+  <div class="sec-header reveal">
+    <span class="sec-label">06</span>
+    <h2 class="sec-title">Get in touch</h2>
+  </div>
+  <p style="font-size:0.9rem;color:var(--muted);margin-bottom:2rem;max-width:480px" class="reveal">Open to entry-level Cloud Engineer, Junior DevOps, and Cloud Support roles. Feel free to reach out.</p>
+  <div class="contact-grid reveal d1">
+    <a href="mailto:muralidharan366636@gmail.com" class="cc">
+      <div class="cc-type">Email</div>
+      <div class="cc-val">muralidharan366636@gmail.com</div>
+    </a>
+    <a href="tel:+919092366636" class="cc">
+      <div class="cc-type">Phone</div>
+      <div class="cc-val">+91 90923 66636</div>
+    </a>
+    <a href="https://www.linkedin.com/in/muralidharan-m-n-78a2522b8" target="_blank" class="cc">
+      <div class="cc-type">LinkedIn</div>
+      <div class="cc-val">muralidharan-m-n-78a2522b8</div>
+    </a>
+    <a href="https://github.com/muralidharan666666-dev" target="_blank" class="cc">
+      <div class="cc-type">GitHub</div>
+      <div class="cc-val">muralidharan666666-dev</div>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-left">© 2026 Muralidharan M.N · Deployed on AWS S3 + CloudFront</div>
+  <div class="foot-links">
+    <a href="https://www.linkedin.com/in/muralidharan-m-n-78a2522b8" target="_blank">LinkedIn</a>
+    <a href="https://github.com/muralidharan666666-dev" target="_blank">GitHub</a>
+    <a href="mailto:muralidharan366636@gmail.com">Email</a>
+  </div>
+</footer>
+
+<script>
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
