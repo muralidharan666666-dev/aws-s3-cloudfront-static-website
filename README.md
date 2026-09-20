@@ -1,10 +1,8 @@
 # Hosting My Portfolio on AWS — S3 + CloudFront
-
+**Live site:** [d1gfj90rneo89i.cloudfront.net](https://d1gfj90rneo89i.cloudfront.net) | **Deploy pipeline:** [GitHub Actions runs](https://github.com/muralidharan666666-dev/aws-s3-cloudfront-static-website/actions)
 I wanted to move my portfolio off a free hosting platform and actually deploy it properly using AWS. My goal was to understand how S3 and CloudFront work together, and how to restrict bucket access so the site is only reachable through the CDN and not directly from S3.
 
 Later I added a GitHub Actions pipeline, so now every push to `main` deploys the site automatically.
-
-**Live site:** https://d1gfj90rneo89i.cloudfront.net
 
 ---
 
