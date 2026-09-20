@@ -1,6 +1,8 @@
 # Hosting My Portfolio on AWS — S3 + CloudFront
 
-I wanted to move my portfolio off a free hosting platform and actually deploy it properly using AWS. My goal was to understand how S3 static hosting works, what CloudFront adds on top of it, and how to restrict bucket access so the site is only reachable through the CDN and not directly through the S3 endpoint.
+I wanted to move my portfolio off a free hosting platform and actually deploy it properly using AWS. My goal was to understand how S3 and CloudFront work together, and how to restrict bucket access so the site is only reachable through the CDN and not directly from S3.
+
+Later I added a GitHub Actions pipeline, so now every push to `main` deploys the site automatically.
 
 **Live site:** https://d1gfj90rneo89i.cloudfront.net
 
@@ -8,15 +10,19 @@ I wanted to move my portfolio off a free hosting platform and actually deploy it
 
 ## What I Built
 
-A static portfolio site (HTML, CSS, JavaScript) deployed on Amazon S3 and served through CloudFront. The bucket is not publicly accessible on its own — traffic has to go through the CloudFront distribution, which handles HTTPS termination and caching.
+A static portfolio site (a single `index.html` with the CSS and JS inside it) stored in a private S3 bucket and served through CloudFront. The bucket can't be reached directly. Every request has to go through the CloudFront distribution, which handles HTTPS and caching.
+
+Deployments go through GitHub Actions. The workflow logs in to AWS with OIDC, so there are no AWS access keys stored anywhere in GitHub.
 
 ---
 
 ## AWS Services I Used
 
-- **Amazon S3** — stores the website files; static hosting is enabled with `index.html` as the default root object
-- **Amazon CloudFront** — handles HTTPS, serves the content from an edge location, and is the only allowed origin for the bucket
-- **AWS IAM** — created a policy to allow CloudFront to read from the S3 bucket (Origin Access Control)
+- **Amazon S3** — stores the website files in a private bucket. Block Public Access is on and static website hosting is off, because CloudFront reads from the bucket's REST endpoint through OAC.
+- **Amazon CloudFront** — handles HTTPS and caching, and is the only thing allowed to read from the bucket. The default root object is set to `index.html` in CloudFront, so opening the domain with no file name still loads the homepage.
+- **Origin Access Control (OAC)** — CloudFront signs every request it sends to S3. A **bucket policy** on the S3 bucket only allows `s3:GetObject` from my CloudFront distribution's ARN.
+- **AWS IAM** — an OIDC identity provider for GitHub, plus one IAM role the pipeline assumes to deploy.
+- **GitHub Actions** — deploys the site on every push to `main`.
 
 ---
 
@@ -24,45 +30,97 @@ A static portfolio site (HTML, CSS, JavaScript) deployed on Amazon S3 and served
 
 ![Architecture diagram](architecture/aws-architecture-diagram.png)
 
-User → CloudFront (HTTPS) → S3 bucket (private, read-only via OAC policy)
+User → CloudFront (HTTPS) → S3 bucket (private, read-only via OAC)
 
-The bucket is not public. CloudFront uses an Origin Access Control (OAC) policy to authenticate requests to S3. The bucket policy only allows `s3:GetObject` from the specific CloudFront distribution ARN.
+Deploy: git push → GitHub Actions → OIDC → IAM role → S3 sync + CloudFront invalidation
 
 ---
 
 ## What I Actually Did
 
 ### 1. Wrote the website
-Basic HTML/CSS/JS portfolio. Nothing fancy — I wanted the AWS setup to be the main focus of this project.
+Started as a basic HTML/CSS/JS portfolio. Later I redesigned it into a single `index.html` with everything inline.
 
-### 2. Created the S3 bucket
-Created a bucket in `ap-south-1` (Mumbai). I left "Block all public access" enabled from the start — I figured I'd set up CloudFront before deciding on permissions.
+### 2. Created the S3 bucket and CloudFront distribution
+Created the bucket in `ap-south-1` (Mumbai) and put a CloudFront distribution in front of it. My first version used the S3 static website endpoint as the CloudFront origin, which meant the bucket had to be publicly readable for it to work.
 
-### 3. Enabled static website hosting
-In the bucket properties, turned on static website hosting and set the index document to `index.html`. This creates an HTTP endpoint for the bucket but I didn't end up using it directly.
+### 3. Found out my bucket was actually public
+When I started building the CI/CD pipeline, I went through the real config instead of trusting what I'd written here. The CloudFront origin was the `s3-website` endpoint, Block Public Access was off, and the bucket policy had `"Principal": "*"`. I opened the S3 website URL directly and my whole site loaded over plain HTTP. This README said that URL returned 403. It didn't.
 
-### 4. Uploaded the files
-Uploaded `index.html`, `style.css`, and `script.js` via the S3 console. Later figured out you can drag-drop a whole folder and it preserves the structure.
+### 4. Moved it behind OAC without taking the site down
+I did it in an order that kept the site up the whole time:
 
-### 5. Set up CloudFront with OAC
-Created a CloudFront distribution with the S3 bucket as the origin. Instead of making the bucket public, I selected Origin Access Control and let CloudFront generate the OAC policy. It gave me a JSON bucket policy to copy into S3 — it restricts `s3:GetObject` to the specific CloudFront distribution ARN.
+1. Set the **default root object** to `index.html` in CloudFront. The S3 REST endpoint has no index document feature, so without this the homepage would break after the switch.
+2. Changed the origin from the `s3-website` endpoint to the S3 REST endpoint and attached an OAC with "sign requests".
+3. **Added** a CloudFront-only statement to the bucket policy, next to the existing public one, and tested.
+4. **Removed** the public statement and tested again.
+5. Turned Block Public Access back on.
+6. Disabled static website hosting, since nothing uses it anymore.
 
-First attempt the distribution returned a 403. Turned out I had forgotten to paste the generated bucket policy into the S3 bucket permissions editor. Once I added that, it resolved.
+Adding the new rule before removing the old one was the key part. If I'd swapped them in one go and made a mistake, CloudFront would have lost access and the site would have gone down.
 
-### 6. Verified it worked
-Opened the CloudFront domain in the browser and confirmed HTTPS was active. Then tried accessing the S3 static website endpoint directly — got a 403, which is exactly what I wanted. That confirmed the bucket was locked down to CloudFront only.
+### 5. Verified it worked
+- The CloudFront URL loads the site over HTTPS. With the public rule gone, that only works because the OAC-signed requests are accepted.
+- Direct S3 access now returns **403 AccessDenied**. After I disabled website hosting, the old `s3-website` URL returns 404 `NoSuchWebsiteConfiguration`.
 
-### 7. Pushed to GitHub
-Pushed the project files to GitHub for version control. The live site stays up independently of the repo — S3 doesn't auto-deploy from GitHub in this setup.
+---
+
+## CI/CD Pipeline (GitHub Actions)
+
+Before this, updating the site meant uploading `index.html` in the S3 console and creating a CloudFront invalidation by hand. That's also how my repo fell out of date: I uploaded a redesign straight to S3 in July and never committed it. The first pipeline run would have overwritten the live site with the old version, so before building anything I downloaded the live file from S3 and committed it. The repo is now the source of truth.
+
+The workflow is in `.github/workflows/deploy.yml`. On every push to `main` it:
+
+1. Checks out the repo
+2. Logs in to AWS with OIDC using `aws-actions/configure-aws-credentials`
+3. Runs `aws s3 sync ./site s3://<bucket> --delete`
+4. Runs `aws cloudfront create-invalidation --paths "/*"`
+
+The website lives in a `site/` folder so that `sync --delete` only mirrors the website into the bucket, and not my README, screenshots and diagrams.
+
+### How the AWS login works (no access keys)
+I added `token.actions.githubusercontent.com` as an OIDC identity provider in IAM, with audience `sts.amazonaws.com`. When the workflow runs, GitHub gives it a short-lived signed token saying which repo and branch it came from. The workflow trades that token for temporary AWS credentials that last up to 1 hour. There's no access key in GitHub Secrets to leak or rotate. The workflow needs `permissions: id-token: write` for this to work.
+
+### Locking the role to my repo
+The OIDC provider only proves a token came from GitHub, not which repo. So the role's trust policy checks the token's `sub` claim:
+
+```
+repo:muralidharan666666-dev/aws-s3-cloudfront-static-website:ref:refs/heads/main
+```
+
+Only workflows from this repo, on the `main` branch, can assume the role. Any other repo, fork or branch gets refused.
+
+### What the role can do
+One inline policy with four actions, each scoped to one resource:
+
+| Action | Resource | Why |
+|---|---|---|
+| `s3:ListBucket` | the bucket | `sync` needs to see what's already there |
+| `s3:PutObject` | objects in the bucket (`/*`) | upload changed files |
+| `s3:DeleteObject` | objects in the bucket (`/*`) | `--delete` removes files that aren't in the repo anymore |
+| `cloudfront:CreateInvalidation` | my distribution only | clear the cache after deploying |
+
+It can't change bucket policies, touch any other bucket, or modify the CloudFront distribution.
+
+### Why the invalidation is needed
+CloudFront caches the page at its edge locations. Without the invalidation, the new file would be in S3 but visitors could keep getting the old cached copy for up to 24 hours.
+
+### Testing it
+- **Run #1** was the commit that added the workflow. The repo already matched S3, so `sync` uploaded nothing. That run tested the OIDC login and permissions without changing the live site.
+- **Run #2** was a real change: adding my HashiCorp Terraform Associate certification to the site. The log showed `upload: site/index.html to s3://...`, and the change was live within a minute. I never opened the AWS console.
 
 ---
 
 ## What I Learned
 
-**Building this project made me understand how real websites actually protect their content.
-Every major website we use — Flipkart, Hotstar, Zomato — stores its images, videos and static files somewhere. That somewhere is usually a private storage bucket. we never access that bucket directly. We always go through their CDN without even knowing it. The bucket URL is never exposed. The CDN is the only door.
+Building this project made me understand how real websites actually protect their content.
+Every major website we use — Flipkart, Hotstar, Zomato — stores its images, videos and static files somewhere. That somewhere is usually a private storage bucket. We never access that bucket directly. We always go through their CDN without even knowing it. The bucket URL is never exposed. The CDN is the only door.
 Before building this I did not understand why that separation existed. Now I do. If the bucket is public anyone who finds the URL can hit it directly — bypassing the CDN, bypassing any access control, bypassing everything. OAC is what enforces that separation. The bucket stays completely private and CloudFront is the only one with permission to read from it. No matter what, every request goes through CloudFront.
-That one concept — keeping storage private and only exposing it through a controlled layer — is the foundation of how content is delivered securely on the internet.**
+That one concept — keeping storage private and only exposing it through a controlled layer — is the foundation of how content is delivered securely on the internet.
+
+Adding the pipeline taught me two more things. First, check what's actually configured instead of what you remember or wrote down. My own README was wrong about my own bucket. Second, once deploys are automated, the repo has to be the only source of truth. Uploading one file by hand is how my repo and my live site ended up out of sync.
+
+---
 
 ## Screenshots
 
@@ -72,12 +130,23 @@ That one concept — keeping storage private and only exposing it through a cont
 ### CloudFront distribution settings
 ![CloudFront](screenshots/cloudfront.png)
 
-### S3 bucket static hosting config
+### Original setup — S3 static website hosting (before moving to OAC)
 ![S3 Hosting](screenshots/s3-hosting.png)
 
 ### GitHub repo
 ![GitHub Repository](screenshots/github-repo.png)
 
+### Before: direct S3 URL loaded the site over HTTP
+![Before OAC](screenshots/before-oac-direct-s3-access.png)
+
+### After: direct S3 URL returns 403
+![After OAC](screenshots/after-oac-403.png)
+
+### Pipeline run — deploy succeeded
+![Pipeline run](screenshots/pipeline-run.png)
+
+### Pipeline log — sync uploading the change
+![Pipeline sync log](screenshots/pipeline-sync-log.png)
 
 ---
 
@@ -85,7 +154,7 @@ That one concept — keeping storage private and only exposing it through a cont
 
 **Muralidharan M N**
 
-AWS Certified Cloud Practitioner | AWS re/Start Graduate
+AWS Certified Cloud Practitioner | HashiCorp Certified: Terraform Associate | AWS re/Start Graduate
 
 LinkedIn: https://www.linkedin.com/in/muralidharan-m-n-78a2522b8
 
